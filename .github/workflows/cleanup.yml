@@ -1,14 +1,9 @@
-name: Cleanup Cloudflare Pages
+name: Cleanup All Cloudflare Pages Projects
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 每天凌晨 2 点运行（UTC 时间）
+    - cron: '0 2 * * *' # 每天凌晨 2 点运行
   workflow_dispatch:
-    inputs:
-      cf_project_name:
-        description: 'telegraph-image'
-        required: false
-        default: telegraph-image
 
 jobs:
   cleanup:
@@ -25,10 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run cleanup script
+      - name: Run multi-project cleanup
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          # 自动使用手动输入的项目名（如未填写则使用默认值）
-          CF_PROJECT_NAME: ${{ github.event.inputs.cf_project_name || 'telegraph-image' }}
         run: node scripts/cleanup-deployments.js
