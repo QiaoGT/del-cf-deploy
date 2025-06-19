@@ -1,54 +1,41 @@
-# 🧹 del-cf-deploy
+# 🧹 del-cf-deploy — Cloudflare Pages 自动部署清理工具
 
 [![Cleanup Workflow](https://github.com/QiaoGT/del-cf-deploy/actions/workflows/cleanup.yml/badge.svg)](https://github.com/QiaoGT/del-cf-deploy/actions/workflows/cleanup.yml)
 
-自动清理 Cloudflare Pages 的历史部署记录，只保留最新的 3 条部署。
-
-Clean up old Cloudflare Pages deployments automatically, keeping only the latest 3.
-
----
-
-## ✨ 特性 Features
-
-- 🗓️ 每日自动运行，也支持手动运行（可切换项目）
-- 🧠 智能识别部署状态，跳过当前激活版本
-- 🔧 基于 GitHub Actions 和 Node.js
-- 🧹 节省部署空间，保持项目整洁
-- ✅ 无需服务器，全程托管
+清理你的 Cloudflare Pages 项目旧部署，只保留最新 3 个版本，让项目整洁如新。  
+Keep your Cloudflare Pages tidy by automatically deleting older deployments and keeping only the latest 3.
 
 ---
 
-## 🚀 使用方法 Usage
+## ✨ 特性 Highlights
 
-### 1. 添加 Secrets
-
-点击 GitHub 仓库 → Settings → Secrets and variables → **Actions** → 添加：
-
-| 名称              | 说明                                 |
-|-------------------|--------------------------------------|
-| `CF_API_TOKEN`     | Cloudflare 的 API Token（需具有 Pages 权限） |
-| `CF_ACCOUNT_ID`    | 你的 Cloudflare 账户 ID                 |
-
-（可选）在 Variables 中添加默认项目名：
-
-| 名称              | 示例值             |
-|-------------------|--------------------|
-| `CF_PROJECT_NAME`  | `telegraph-image`  |
+- 🔁 支持多个项目，统一清理
+- 🧹 每日自动执行，也支持手动触发
+- 🔐 跳过当前激活版本，防止误删
+- 🛠️ 全程托管，无需服务器
 
 ---
 
-### 2. 配置 Actions
+## 🚀 快速上手 Setup
 
-每次 push 后，该 workflow 会自动运行（或你也可以手动运行，并传入不同的项目名）：
+### 1️⃣ 添加 GitHub Secrets
 
-```yaml
-on:
-  schedule:
-    - cron: '0 2 * * *'
-  workflow_dispatch:
-    inputs:
-      cf_project_name:
-        description: 'Cloudflare Pages 项目名称'
-        required: false
-        default: telegraph-image
+前往仓库 → Settings → Secrets and variables → Actions → 添加以下两个 secrets：
 
+| 名称             | 说明                                |
+|------------------|-------------------------------------|
+| `CF_API_TOKEN`   | Cloudflare 的 API Token，需具有 Pages 权限 |
+| `CF_ACCOUNT_ID`  | 你的 Cloudflare 账户 ID               |
+
+---
+
+### 2️⃣ 配置项目列表
+
+在项目根目录创建 `projects.json` 文件：
+
+```json
+[
+  "my-first-pages-site",
+  "another-project",
+  "telegraph-image"
+]
