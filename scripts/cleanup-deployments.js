@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const accountId = process.env.CF_ACCOUNT_ID;
 const project = process.env.CF_PROJECT_NAME;
@@ -7,6 +7,8 @@ const keepCount = 3;
 
 const baseURL = `https://api.cloudflare.com/client/v4/accounts/${accountId}/pages/projects/${project}/deployments`;
 const headers = { Authorization: `Bearer ${token}` };
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 (async () => {
   console.log("📥 Fetching deployments...");
@@ -47,6 +49,6 @@ const headers = { Authorization: `Bearer ${token}` };
       console.warn(`⚠️ Failed to delete ${d.id}:`, delData.errors);
     }
 
-    await new Promise(res => setTimeout(res, 1000)); // avoid rate limiting
+    await sleep(1000); // avoid rate limits
   }
 })();
