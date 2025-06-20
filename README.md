@@ -35,7 +35,7 @@ Keep your Cloudflare Pages tidy by automatically deleting older deployments and 
 
 ```json
 [
-  "my-first-pages-site",
-  "another-project",
-  "telegraph-image"
+  "项目1",
+  "项目2",
+  "项目..."
 ]
