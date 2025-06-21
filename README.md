@@ -1,4 +1,5 @@
 # 🧹 Cloudflare Pages 全自动部署清理工具
+[![Cleanup All Cloudflare Pages Projects](https://github.com/QiaoGT/del-cf-deploy/actions/workflows/cleanup.yml/badge.svg)](https://github.com/QiaoGT/del-cf-deploy/actions/workflows/cleanup.yml)
 
 全自动发现并清理您 Cloudflare 账户下**所有** Pages 项目的旧部署，每个项目仅保留最新的 3 个版本，让您的 Pages 管理后台永远保持整洁。
 
