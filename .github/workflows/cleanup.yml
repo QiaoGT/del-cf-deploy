@@ -2,7 +2,8 @@ name: Cleanup All Cloudflare Pages Projects
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 每天凌晨 2 点运行
+    # 将原来的 '0 2 * * *' (每天凌晨2点) 修改为 '*/3 * * * *' (每3分钟)
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 jobs:
