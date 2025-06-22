@@ -2,8 +2,8 @@ name: 清理所有 Cloudflare Pages 项目
 
 on:
   schedule:
-    - cron: '*/10 * * * *'   # 每 10 分钟自动运行一次（UTC 时间）
-  workflow_dispatch:          # 支持手动运行
+    - cron: '0 2 * * *'   # 每天 UTC 时间凌晨 2 点自动运行（等于北京时间 10 点，夏令时为 11 点）
+  workflow_dispatch:        # 支持手动触发
 
 jobs:
   precheck:
