@@ -2,8 +2,8 @@ name: 清理所有 Cloudflare Pages 项目
 
 on:
   schedule:
-    - cron: '*/10 * * * *'  # ⏱️ 每 10 分钟自动触发一次（UTC 时间）
-  workflow_dispatch:         # ✅ 支持手动运行
+    - cron: '*/10 * * * *'   # 每 10 分钟自动运行一次（UTC 时间）
+  workflow_dispatch:          # 支持手动运行
 
 jobs:
   precheck:
@@ -12,10 +12,21 @@ jobs:
     outputs:
       should_cleanup: ${{ steps.check.outputs.should_cleanup }}
     steps:
-      - name: 显示触发时间和方式
+      - name: 显示触发时间和方式（中文）
+        shell: bash
         run: |
           echo "📅 当前触发时间（UTC）: $(date -u)"
-          echo "📢 触发来源: ${{ github.event_name }}"
+          case "${{ github.event_name }}" in
+            schedule)
+              echo "📢 触发方式: 自动定时触发（schedule）"
+              ;;
+            workflow_dispatch)
+              echo "📢 触发方式: 手动触发（workflow_dispatch）"
+              ;;
+            *)
+              echo "📢 触发方式: 其他方式（${{ github.event_name }}）"
+              ;;
+          esac
 
       - name: 获取代码
         uses: actions/checkout@v4
@@ -28,7 +39,7 @@ jobs:
       - name: 安装依赖
         run: npm install
 
-      - name: 判断是否真的需要清理部署
+      - name: 判断是否需要清理
         id: check
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
@@ -38,7 +49,7 @@ jobs:
           if grep -q '"cleanup":true' result.log; then
             echo "✅ 有需要清理的部署。" && echo "should_cleanup=true" >> $GITHUB_OUTPUT
           else
-            echo "🛑 没有部署需要清理。" && echo "should_cleanup=false" >> $GITHUB_OUTPUT
+            echo "🛑 没有需要清理的部署。" && echo "should_cleanup=false" >> $GITHUB_OUTPUT
           fi
 
   cleanup:
@@ -47,10 +58,21 @@ jobs:
     if: needs.precheck.outputs.should_cleanup == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: 显示清理阶段时间和来源
+      - name: 显示触发时间和方式（中文）
+        shell: bash
         run: |
           echo "📅 Cleanup 阶段触发时间（UTC）: $(date -u)"
-          echo "📢 触发来源: ${{ github.event_name }}"
+          case "${{ github.event_name }}" in
+            schedule)
+              echo "📢 触发方式: 自动定时触发（schedule）"
+              ;;
+            workflow_dispatch)
+              echo "📢 触发方式: 手动触发（workflow_dispatch）"
+              ;;
+            *)
+              echo "📢 触发方式: 其他方式（${{ github.event_name }}）"
+              ;;
+          esac
 
       - name: 获取代码
         uses: actions/checkout@v4
