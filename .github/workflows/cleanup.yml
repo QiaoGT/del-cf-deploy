@@ -2,12 +2,44 @@ name: Cleanup All Cloudflare Pages Projects
 
 on:
   schedule:
-    # 每天凌晨 2 点 (UTC时间) 自动运行
-    - cron: '0 2 * * *'
-  workflow_dispatch:
+    - cron: '0 2 * * *' # 每天凌晨 2 点（UTC）运行
+  workflow_dispatch:      # 允许手动运行
 
 jobs:
+  precheck:
+    name: Precheck deployment count
+    runs-on: ubuntu-latest
+    outputs:
+      should_cleanup: ${{ steps.check.outputs.should_cleanup }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Pre-check if cleanup is needed
+        id: check
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        run: |
+          node scripts/check-need-cleanup.js > result.log
+          if grep -q '"cleanup":true' result.log; then
+            echo "✅ 有需要清理的部署。" && echo "should_cleanup=true" >> $GITHUB_OUTPUT
+          else
+            echo "🛑 没有部署需要清理。" && echo "should_cleanup=false" >> $GITHUB_OUTPUT
+          fi
+
   cleanup:
+    name: Run Cleanup Script
+    needs: precheck
+    if: needs.precheck.outputs.should_cleanup == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,7 +53,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run multi-project cleanup
+      - name: Execute Cleanup
         env:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
