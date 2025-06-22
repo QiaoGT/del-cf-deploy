@@ -12,6 +12,11 @@ jobs:
     outputs:
       should_cleanup: ${{ steps.check.outputs.should_cleanup }}
     steps:
+      - name: Show trigger time & source
+        run: |
+          echo "📅 触发时间（UTC）: $(date -u)"
+          echo "📢 触发方式: ${{ github.event_name }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -42,6 +47,11 @@ jobs:
     if: needs.precheck.outputs.should_cleanup == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Show trigger time & source
+        run: |
+          echo "📅 Cleanup 阶段触发时间（UTC）: $(date -u)"
+          echo "📢 触发方式: ${{ github.event_name }}"
+
       - name: Checkout code
         uses: actions/checkout@v4
 
